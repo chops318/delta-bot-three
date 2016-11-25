@@ -8,6 +8,7 @@
     "startProduction": "npm run build && nodemon ./dist/index.js -w ./dist",
     "start-debug": "babel-node ./src --debug",
     "test": "npm run eslint && jest && npm run build",
+    "testWatch": "jest --watch",
     "eslint": "eslint ./src",
     "build": "babel src --out-dir dist --ignore spec.js"
   },
@@ -42,7 +43,8 @@
     "mkdirp": "^0.5.1",
     "node-fetch": "^1.3.3",
     "promisify-node": "^0.3.0",
-    "query-string": "^3.0.0"
+    "query-string": "^3.0.0",
+    "snoowrap": "^1.11.1"
   },
   "jest": {
     "testEnvironment": "node"

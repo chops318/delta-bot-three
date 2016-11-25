@@ -16,6 +16,8 @@ import path from 'path'
 // import bodyParser from 'koa-bodyparser'
 import Reddit from './reddit-api-driver'
 import DeltaBoardsThree from './delta-boards-three'
+import Snoowrap from 'snoowrap'
+import CheckEditedComments from './check-edited-comments'
 import parseHiddenParams from './parse-hidden-params'
 import getWikiContent from './get-wiki-content'
 
@@ -741,7 +743,7 @@ const checkMessagesforDeltas = async () => {
 }
 
 const entry = async () => {
-  try {
+/*  try {
     await reddit.connect()
     if (!lastParsedCommentID) {
       const response = await reddit.query(`/r/${subreddit}/comments.json`, true)
@@ -757,7 +759,7 @@ const entry = async () => {
     checkMessagesforDeltas()
   } catch (err) {
     console.error(err)
-  }
+  }*/
   try {
     let deltaBoardsThreeCredentials
     /* eslint-disable import/no-unresolved */
@@ -782,13 +784,34 @@ const entry = async () => {
         }`.red)
       }
     }
-    /* eslint-enable import/no-unresolved */
-    const deltaBoardsThree = new DeltaBoardsThree({
-      credentials: deltaBoardsThreeCredentials,
-      version: packageJson.version,
-      flags,
+    // const deltaBoardsThree = new DeltaBoardsThree({
+    //   credentials: deltaBoardsThreeCredentials,
+    //   version: packageJson.version,
+    //   flags,
+    // })
+    // deltaBoardsThree.initialStart()
+  } catch (err) {
+    console.error(err)
+  }
+  try {
+    let checkEditedCommentsCredentials
+    try {
+      checkEditedCommentsCredentials = JSON.parse(
+        fs.readFileSync('./credentials/check-edited-comments-credentials.json')
+      )
+    } catch (err) {
+      checkEditedCommentsCredentials = credentials
+    }
+    const { username, password, clientID: clientId, clientSecret } = checkEditedCommentsCredentials
+    const snoowrap = new Snoowrap({
+      userAgent: `DB3/v${packageJson.version} by MystK`,
+      clientId,
+      clientSecret,
+      username,
+      password,
     })
-    deltaBoardsThree.initialStart()
+    const checkEditedComments = new CheckEditedComments({ snoowrap })
+    checkEditedComments.initialStart()
   } catch (err) {
     console.error(err)
   }
